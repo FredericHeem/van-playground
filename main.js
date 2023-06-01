@@ -5,6 +5,8 @@ import van from "./van";
 
 const { a, button, div, h1, img, p } = van.tags;
 
+const counter = van.state(0);
+
 const App = () =>
   div(
     a(
@@ -23,9 +25,23 @@ const App = () =>
       })
     ),
     h1("Van.js app built with Vite!"),
-    div({ class: "card" }, button({ id: "counter", type: "button" })),
+    div(
+      { class: "card" },
+      button(
+        {
+          id: "counter",
+          type: "button",
+          onclick: (event) => {
+            counter.val++;
+          },
+        },
+        "Click"
+      )
+    ),
+    p("Counts ", counter),
     p({ class: "read-the-docs" }, "Click on the Vite logo to learn more")
     //div({ a: undefined })
+    //div(undefined)
   );
 
 const app = document.getElementById("app");
