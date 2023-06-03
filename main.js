@@ -3,9 +3,10 @@ import vanLogo from "/vanjs.svg";
 import viteLogo from "/vite.svg";
 import van from "./van";
 
-const { a, button, div, h1, img, p } = van.tags;
+const { a, button, div, h1, img, p, input } = van.tags;
 
 const counter = van.state(0);
+const inputState = van.state("");
 
 const App = () =>
   div(
@@ -39,7 +40,15 @@ const App = () =>
       )
     ),
     p("Counts ", counter),
-    p({ class: "read-the-docs" }, "Click on the Vite logo to learn more")
+    input({
+      type: "text",
+      name: "my-input",
+      value: inputState.val,
+      oninput: (event) => {
+        inputState.val = event.target.value;
+      },
+    }),
+    p({ id: inputState }, "Value: ", inputState)
     //div({ a: undefined })
     //div(undefined)
   );
