@@ -1,57 +1,97 @@
 import "./style.css";
-import vanLogo from "/vanjs.svg";
-import viteLogo from "/vite.svg";
 import van from "./van";
+import vanArray from "./van-array";
 
-const { a, button, div, h1, img, p, input } = van.tags;
+const { a, button, div, ul, li, input, span } = van.tags;
 
-const counter = van.state(0);
-const inputState = van.state("");
+const arr = ["wash laundry", "do stuff"];
 
-const App = () =>
-  div(
-    a(
-      { href: "https://vitejs.dev", target: "_blank" },
-      img({ src: viteLogo, class: "logo", alt: "Vite logo" })
-    ),
-    a(
-      {
-        href: "https://vanjs.org",
-        target: "_blank",
-      },
-      img({
-        src: vanLogo,
-        class: "logo vanilla",
-        alt: "JavaScript logo",
-      })
-    ),
-    h1("Van.js app built with Vite!"),
+const App = () => {
+  const inputState = van.state("");
+  const proxyArray = vanArray.stateArray(arr)
+
+  return div(
+    "Test Observable Array",
+
     div(
-      { class: "card" },
       button(
         {
-          id: "counter",
-          type: "button",
-          onclick: (event) => {
-            counter.val++;
+          onclick: () => {
+            proxyArray.val.push(inputState.val)
           },
         },
-        "Click"
-      )
-    ),
-    p("Counts ", counter),
-    input({
-      type: "text",
-      name: "my-input",
-      value: inputState.val,
-      oninput: (event) => {
-        inputState.val = event.target.value;
-      },
-    }),
-    p({ id: inputState }, "Value: ", inputState)
-    //div({ a: undefined })
-    //div(undefined)
+        "Push"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val.pop()
+          },
+        },
+        "Pop"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val.shift()
+          },
+        },
+        "Shift"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val.unshift(inputState.val)
+          },
+        },
+        "Unshift"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val.splice(1, 2, "foo")
+          },
+        },
+        "Splice 1 2 foo"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val[0] = "bar"
+          },
+        },
+        "arr[0] = 'bar'"
+      ),
+      button(
+        {
+          onclick: () => {
+            proxyArray.val = ["bar"]
+          },
+        },
+        "arr = ['bar']"
+      ),
+
+      div(input({
+        id: "my-id",
+        text: "text",
+        value: inputState,
+        oninput: (event) => inputState.val = event.target.value
+      })),
+      van.bind(proxyArray, (array) => {
+        return div("Items Count ", array.length)
+      }),
+      vanArray.bindArray({
+        deps: [proxyArray],
+        renderContainer: ({ values: [arr], renderItem }) => {
+          return ul(arr.map(value => renderItem({ value })))
+        },
+        renderItem: ({ value, deps }) => {
+          return li(value)
+        }
+      })
+    )
   );
+};
 
 const app = document.getElementById("app");
 app.replaceChildren(App({}));

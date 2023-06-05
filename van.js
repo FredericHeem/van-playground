@@ -56,7 +56,7 @@ let tags = new Proxy((name, ...args) => {
     else setter(v)
   }
   return add(dom, ...children)
-}, {get: (tag, name) => tag.bind(_undefined, name)})
+}, { get: (tag, name) => tag.bind(_undefined, name) })
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
@@ -64,7 +64,7 @@ let updateDoms = () => {
   let changedStatesArray = [...changedStates]
   changedStates = _undefined
   for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
-    let {_deps, dom} = b
+    let { _deps, dom } = b
     let newDom = b.func(..._deps.map(d => d._val), dom, ..._deps.map(d => d.oldVal))
     if (newDom !== dom)
       if (newDom != _undefined)
@@ -80,7 +80,7 @@ let bind = (...deps) => {
   let func = deps.pop()
   let result = func(...deps.map(d => d._val))
   if (result == _undefined) return []
-  let binding = {_deps: deps, dom: toDom(result), func}
+  let binding = { _deps: deps, dom: toDom(result), func }
   for (let s of deps) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
@@ -90,4 +90,6 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, tags, state, bind}
+export { addAndScheduleOnFirst, toDom }
+
+export default { add, tags, state, bind }
