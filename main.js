@@ -1,7 +1,7 @@
 import "./style.css";
 import vanLogo from "/vanjs.svg";
 import viteLogo from "/vite.svg";
-import van from "./van";
+import van from "vanjs-core";
 
 const { a, button, div, h1, img, p } = van.tags;
 
